@@ -13,6 +13,7 @@ pytestmark = pytest.mark.jsons(
     "json",
     "jsonc",
     "json5",
+    "hjson",
 )
 
 

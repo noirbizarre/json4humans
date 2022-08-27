@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 pytestmark = pytest.mark.jsons(
     "jsonc",
     "json5",
+    "hjson",
 )
 
 LITERALS_WITH_COMMENTS = (

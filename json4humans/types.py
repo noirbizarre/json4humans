@@ -108,7 +108,7 @@ class Array(list["Value"], Container):
         trailing_coma: bool = False,
         **kwargs,
     ):
-        list.__init__(self, items)
+        list.__init__(self, items or [])
         Container.__init__(
             self, before=before, after=after, head=head, tail=tail, trailing_coma=trailing_coma
         )

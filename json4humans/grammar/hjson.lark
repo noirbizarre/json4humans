@@ -1,0 +1,35 @@
+value: wsc__wschs raw_value wsc__wschs
+
+?raw_value: object_with_trailing
+        | array
+        | json5__number
+        | string
+        | json__literal
+
+_SEP: "," | "\n"
+
+array: "[" [value_list] wsc__wschs "]"
+value_list: value (_SEP value)* _SEP?
+
+!object_with_trailing: "{" [member (_SEP member)* _SEP?] wsc__wschs "}"
+// FIXME: use a separated member_list rule
+// object: "{" [member_list] wsc__wschs "}"
+// member_list: member (_SEP member)* _SEP?
+member: key ":" value
+
+
+QUOTELESS_FIRST_CHAR: /[^,:\[\]\{\}]/
+QUOTELESS_CHAR: /[^\u000A\u000D\u2028\u2029]/
+quoteless_string : QUOTELESS_FIRST_CHAR QUOTELESS_CHAR+
+
+MULTILINE_CHAR: /^(?!''')./
+multiline_string: "'''" MULTILINE_CHAR+ "'''"
+
+string :  json__string | multiline_string | quoteless_string
+key : wsc__wschs (json__string|json5__identifier) wsc__wschs
+
+%import .json.literal -> json__literal
+%import .json.string -> json__string
+%import .json5.identifier -> json5__identifier
+%import .json5.number -> json5__number
+%import .wsc.wschs -> wsc__wschs

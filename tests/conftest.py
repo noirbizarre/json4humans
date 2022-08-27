@@ -6,7 +6,7 @@ from typing import Any
 
 import pytest
 
-from json4humans import json, json5, jsonc
+from json4humans import hjson, json, json5, jsonc
 from json4humans.types import JSONModule
 
 
@@ -14,7 +14,7 @@ def module_name(mod: ModuleType) -> str:
     return mod.__name__.split(".")[-1]
 
 
-JSONS: dict[str, JSONModule] = {module_name(mod): mod for mod in (json, jsonc, json5)}
+JSONS: dict[str, JSONModule] = {module_name(mod): mod for mod in (json, jsonc, json5, hjson)}
 FIXTURES: Path = Path(__file__).parent / "fixtures"
 
 

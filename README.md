@@ -37,7 +37,7 @@ it's not a good machine-readable format anymore. Anyway, it's an interesting for
 ### Why a new library ? Why a all-in-on library ?
 
 I've often been strugling with those file-format edition with style preservation.
-This is a reccurrent problem (this has all started with JSONC edition in [PDM_VSCode](https://github.com/noirbizarre/pdm-vscode)).
+This is a reccurrent problem (this has all started with JSONC edition in [PDM-VSCode](https://github.com/noirbizarre/pdm-vscode)).
 
 Each time I work with a format, I want to be able to edit-it with style preservation (aka. rount-trip support)
 but I also often want to:

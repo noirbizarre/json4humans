@@ -90,6 +90,7 @@ markers = [
   "jsons(*modules): Mark to be tested against multiple JSON modules/version",
   "fixturize(glob): parametrize the test with a fixture glob pattern",
   "json: Mark a function to be tested against the JSON implementation",
-  "json5: Mark a function to be tested against the JSON5 implementation",
   "jsonc: Mark a function to be tested against the JSONC implementation",
+  "json5: Mark a function to be tested against the JSON5 implementation",
+  "hjson: Mark a function to be tested against the HJSON implementation",
 ]
