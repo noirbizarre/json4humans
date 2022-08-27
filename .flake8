@@ -1,0 +1,4 @@
+[flake8]
+max-line-length = 110
+exclude = doc,.git,build,dist
+extend-ignore = E203
