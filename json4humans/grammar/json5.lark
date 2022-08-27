@@ -1,0 +1,56 @@
+value: wsc__wscs raw_value wsc__wscs
+?raw_value: object_with_trailing
+            | array
+            | string
+            | number
+            | json__literal
+
+array: "[" [value_list] wsc__wscs "]"
+!value_list: value ("," value)* ","?
+
+
+!object_with_trailing: "{" [member ("," member)* ","?] wsc__wscs "}"
+// FIXME: use a separated member_list rule
+// object: "{" [member_list] wsc__wscs "}"
+// !member_list: member ("," member)* ","?
+
+member: key ":" value
+
+
+HEX: HEXDIGIT+
+
+HEXNUMBER: "0" ("x"|"X") HEX
+
+SIGNED_HEXNUMBER.2: ["+"|"-"] HEXNUMBER
+
+number: SIGNED_HEXNUMBER | SIGNED_NUMBER
+
+CHAR_ESCAPE: "\\" ("'"|"\""|"\\"|"b"|"f"|"n"|"r"|"t"|"v"|"0"|"/")
+HEX_ESCAPE: "\\x" HEXDIGIT~2
+UNICODE_ESCAPE: "\\u" HEXDIGIT~4
+ESCAPE_SEQUENCE: CHAR_ESCAPE | HEX_ESCAPE | UNICODE_ESCAPE
+LINE_CONTINUATION: "\\" ("\u000A"|"\u000D"|"\u2028"|"\u2029")
+
+SINGLE_QUOTE_SOURCE_CHAR: /[^'\\\u000A\u000D\u2028\u2029]/
+SINGLE_QUOTE_CHAR: SINGLE_QUOTE_SOURCE_CHAR | ESCAPE_SEQUENCE | LINE_CONTINUATION
+SINGLE_QUOTE_CHARS: SINGLE_QUOTE_CHAR+
+single_quote_string: "'" [SINGLE_QUOTE_CHARS] "'"
+
+DOUBLE_QUOTE_SOURCE_CHAR: /[^"\\\u000A\u000D\u2028\u2029]/
+DOUBLE_QUOTE_CHAR: DOUBLE_QUOTE_SOURCE_CHAR | ESCAPE_SEQUENCE | LINE_CONTINUATION
+DOUBLE_QUOTE_CHARS: DOUBLE_QUOTE_CHAR+
+double_quote_string: "\"" [DOUBLE_QUOTE_CHARS] "\""
+
+string : double_quote_string | single_quote_string
+identifier : CNAME
+key : wsc__wscs (string | identifier) wsc__wscs
+
+%import common.HEXDIGIT
+%import common.CNAME
+%import common.ESCAPED_STRING
+%import common.LETTER
+%import common.DIGIT
+%import common.SIGNED_NUMBER
+
+%import .json.literal -> json__literal
+%import .wsc.wscs -> wsc__wscs

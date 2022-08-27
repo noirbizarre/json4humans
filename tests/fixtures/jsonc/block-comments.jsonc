@@ -1,0 +1,10 @@
+{
+  /* it's a string */
+  "str": "abcd", /* still a string */
+  /*
+   it's an integer
+   */
+  "int": 42,
+  /*it's a boolean*/
+  "bool": true
+}
