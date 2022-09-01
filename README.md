@@ -19,7 +19,6 @@ As of today, JSON4Humans support the following formats:
 - [JSONC](./#JSON-with-comments-JSONC)
 - [JSON5](./#JSON5)
 
-
 ### JSON
 
 While [JSON](https://www.json.org/) is natively supported by Python standard library,
