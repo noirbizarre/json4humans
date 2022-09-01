@@ -44,11 +44,27 @@ doc = [
 
 
 [tool.pdm.scripts]
-test = "pytest"
+test = {cmd = "pytest", help = "Run the test suite"}
+cover = { composite = [
+  """
+  test
+    --cov-report=term
+    --cov=json4humans
+    --cov-report=html:reports/coverage
+    --cov-report=xml:reports/coverage.xml
+    --junitxml=reports/tests.xml
+  """
+], help = "Run the test suite with coverage" }
 tox = "tox"
 lint = "pre-commit run --all-files"
 doc = "mkdocs build"
 "doc:watch" = "mkdocs serve"
+
+
+
+[tool.pdm.vscode]
+linters = ["flake8"]
+formatter = "black"
 
 
 [tool.black]
@@ -83,7 +99,9 @@ known_third_party = ["lark"]
 
 [tool.pytest.ini_options]
 addopts = "-ra"
+norecursedirs = ".git build dist"
 testpaths = [
+  "json4humans/",
   "tests/",
 ]
 markers = [
@@ -92,4 +110,11 @@ markers = [
   "json: Mark a function to be tested against the JSON implementation",
   "json5: Mark a function to be tested against the JSON5 implementation",
   "jsonc: Mark a function to be tested against the JSONC implementation",
+]
+
+[tool.coverage.run]
+source = ["json4humans"]
+branch = true
+omit = [
+  "tests/*",
 ]
