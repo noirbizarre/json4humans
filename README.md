@@ -1,5 +1,10 @@
 # json4humans
 
+[![CI](https://github.com/noirbizarre/json4humans/actions/workflows/ci.yml/badge.svg)](https://github.com/noirbizarre/json4humans/actions/workflows/ci.yml)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/noirbizarre/json4humans/main.svg)](https://results.pre-commit.ci/latest/github/noirbizarre/json4humans/main)
+[![Maintainability](https://api.codeclimate.com/v1/badges/54c04851ef133974e718/maintainability)](https://codeclimate.com/github/noirbizarre/json4humans/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/54c04851ef133974e718/test_coverage)](https://codeclimate.com/github/noirbizarre/json4humans/test_coverage)
+
 Python tools for JSONC and JSON5 (aka. JSON for humans)
 
 This package provider parsing and serialization (with style preservation)
