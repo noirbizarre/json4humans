@@ -118,3 +118,9 @@ branch = true
 omit = [
   "tests/*",
 ]
+
+
+[tool.mypy]
+exclude = [
+  "docs",
+]

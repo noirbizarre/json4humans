@@ -1,9 +1,27 @@
 site_name: JSON4Humans
+site_author: Axel Haustant
+
+repo_name: noirbizarre/json4humans
 repo_url: https://github.com/noirbizarre/json4humans
 
 
 theme:
   name: material
+  logo: images/logo.svg
+  favicon: images/favicon.png
+  language: en
+  features:
+    - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - navigation.tracking
+    # - navigation.indexes
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+    - toc.integrate
   palette:
       # Palette toggle for automatic mode
     - media: "(prefers-color-scheme)"
@@ -25,10 +43,57 @@ theme:
         icon: material/brightness-4
         name: Switch to system preference
 
+extra_css:
+  - css/json4humans.css
+
 plugins:
   - search
-  - mkdocstrings
+  - mkdocstrings:
+      custom_templates: templates
+      default_handler: python
+      handlers:
+        python:
+          options:
+            # show_if_no_docstring: true
+            # show_root_full_path: false
+            # merge_init_into_class: true
+            heading_level: 3
+            filters:
+              - "!^__?"
+              - "^__init__$"
+            show_signature_annotations: true
+            show_root_heading: true
+            docstring_style: sphinx
+            show_source: false
+          import:
+            - http://docs.python.org/3/objects.inv
+            - https://lark-parser.readthedocs.io/en/stable/objects.inv
+
+markdown_extensions:
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.snippets:
+      base_path: docs/snippets
+      check_paths: true
+  - toc:
+      toc_depth: 4
+  - pymdownx.tasklist:
+      custom_checkbox: true
 
 nav:
   - Home: index.md
-  - API Reference: api.md
+  - Usage: usage.md
+  - Reference: api.md
+  - FAQ: faq.md
+
+watch:
+  - docs
+  - json4humans
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/noirbizarre/json4humans
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/json4humans

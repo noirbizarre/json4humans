@@ -1,8 +1,13 @@
+"""
+This module handles whitespaces and comments
+"""
+
 from __future__ import annotations
 
 from typing import cast
 
-from lark import Lark, Token, Transformer, v_args
+from lark import Lark, Token
+from lark.visitors import Transformer, v_args
 
 from .env import DEBUG
 from .types import WSC, BlockStyleComment, HashStyleComment, JSONType, LineStyleComment, WhiteSpace
@@ -17,6 +22,10 @@ def parse(wsc: str) -> list[WSC]:
 
 
 def parse_list(items: list["WSC" | str] | None = None) -> list[WSC]:
+    """
+    Parse an optional sequence of whitespaces and comments as [WSC][json4humans.types.WSC] or [str][]
+    into a list of [WSC][json4humans.types.WSC] only.
+    """
     if items is None:
         return []
     wscs: list[WSC] = []
@@ -29,6 +38,10 @@ def parse_list(items: list["WSC" | str] | None = None) -> list[WSC]:
 
 
 class WSCTransformer(Transformer):
+    """
+    A [Transformer][lark.visitors.Transformer] handling whitespaces and comments.
+    """
+
     @v_args(inline=True)
     def WS(self, token: Token) -> WhiteSpace:
         return WhiteSpace(token.value)
