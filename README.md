@@ -31,18 +31,21 @@ pdm add json4humans
 Then import the proper module and use it like you would with the builtin `json` module:
 
 ```python
+from pathlib import Path
 from json4humans import json
+
+my_file = Path(__file__).parent / "my_file.json"
 
 # Load data
 with my_file.open() as f:
-  data = json.load(f)
+    data = json.load(f)
 
 # Edit
 data["attr"] = "value"
 
 # Save with style preservation
 with my_file.open("w") as out:
-  json.dump(out, data)
+    json.dump(out, data)
 
 ```
 
