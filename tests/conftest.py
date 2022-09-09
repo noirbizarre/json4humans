@@ -19,32 +19,23 @@ FIXTURES: Path = Path(__file__).parent / "fixtures"
 
 
 class JSONTester:
-    json: JSONModule
+    """
+    Wraps a JSONModule and adds test helper to it.
+    """
 
-    def __init__(self, json: JSONModule):
-        self.json = json
+    module: JSONModule
+
+    def __init__(self, module: JSONModule):
+        self.module = module
 
     def assert_parse_equal(self, input: Path | str, expected: Any) -> Any:
         __tracebackhide__ = True
-        data = self.json.loads(input.read_text() if isinstance(input, Path) else input)
+        data = self.module.loads(input.read_text() if isinstance(input, Path) else input)
         assert data == expected
         return data
 
-    def loads(self, *args, **kwargs) -> Any:
-        __tracebackhide__ = True
-        return self.json.loads(*args, **kwargs)
-
-    def load(self, *args, **kwargs) -> Any:
-        __tracebackhide__ = True
-        return self.json.load(*args, **kwargs)
-
-    def dumps(self, *args, **kwargs) -> str:
-        __tracebackhide__ = True
-        return self.json.dumps(*args, **kwargs)
-
-    def dump(self, *args, **kwargs) -> None:
-        __tracebackhide__ = True
-        return self.json.dump(*args, **kwargs)
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self.module, name)
 
 
 def pytest_generate_tests(metafunc: pytest.Metafunc):

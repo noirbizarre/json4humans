@@ -6,7 +6,7 @@ The JSON5 Data Interchange Format ([JSON5](https://json5.org/)) is a superset of
 that aims to alleviate some of the limitations of JSON by expanding its syntax to include some productions
 from [ECMAScript 5.1](https://www.ecma-international.org/ecma-262/5.1/).
 
-See: [specifications](https://specs.json5.org)
+See: [specifications](https://spec.json5.org)
 
 """
 from __future__ import annotations

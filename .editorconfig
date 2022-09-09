@@ -24,5 +24,5 @@ indent_size = 4
 indent_size = 2
 
 
-[*.css]
+[*.{js,css}]
 indent_size = 2
