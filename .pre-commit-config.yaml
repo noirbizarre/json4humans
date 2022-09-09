@@ -1,5 +1,9 @@
 ci:
-  autoupdate_schedule: monthly
+  autoupdate_schedule: weekly
+  autoupdate_commit_msg: 'ci(pre-commit): pre-commit.ci autoupdate'
+  autofix_commit_msg: 'ci(pre-commit): pre-commit.ci autofixes'
+
+
 
 repos:
   - repo: https://github.com/psf/black
