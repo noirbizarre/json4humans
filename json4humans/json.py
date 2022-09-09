@@ -1,10 +1,19 @@
+"""
+This module implements the [JSONModule protocol][json4humans.types.JSONModule]
+for [JSON](https://www.json.org/).
+
+While [JSON](https://www.json.org/) is natively supported by Python standard library,
+the builtin module doesn't provide style preservation.
+
+This one do by returning [style preserving types][json4humans.types] storing whitespaces.
+"""
 from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, TextIO
 
-from lark import Lark, Token, v_args
-from lark.visitors import merge_transformers
+from lark import Lark, Token
+from lark.visitors import merge_transformers, v_args
 
 from . import wsc
 from .env import DEBUG
@@ -25,6 +34,10 @@ from .types import (  # noqa: F401
 
 
 class JSONTransformer(StylePreservingTransformer):
+    """
+    A [Transformer][lark.visitors.Transformer] for JSON
+    """
+
     @v_args(inline=True)
     def string(self, s):
         return String(
@@ -51,6 +64,10 @@ transformer = merge_transformers(JSONTransformer(), wsc=wsc.transformer)
 
 
 class JSONEncoder:
+    """
+    The default JSON Encoder
+    """
+
     def encode(self, obj: Any) -> str:
         match obj:
             case bool():
@@ -148,6 +165,9 @@ parser = Lark.open("grammar/json.lark", rel_to=__file__, **_params)
 
 
 def loads(src: str) -> Any:
+    """
+    Parse JSON from a string
+    """
     if DEBUG:
         tree = parser.parse(src)
         return transformer.transform(tree)
@@ -156,13 +176,22 @@ def loads(src: str) -> Any:
 
 
 def load(file: TextIO) -> str:
+    """
+    Parse JSON from a file-like object
+    """
     return loads(file.read())
 
 
 def dumps(obj: Any) -> str:
+    """
+    Serialize JSON to a string
+    """
     return JSONEncoder().encode(obj)
 
 
 def dump(obj: Any, out: TextIO):
+    """
+    Serialize JSON to a file-like object
+    """
     out.write(dumps(obj))
     out.write("\n")

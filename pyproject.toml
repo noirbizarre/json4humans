@@ -29,8 +29,8 @@ lint = [
     "black>=22.6.0",
     "isort>=5.10.1",
     "mypy>=0.971",
-    "flake8>=4.0.1",
     "absolufy-imports>=0.3.1",
+    "flakeheaven>=3.0.0",
 ]
 tox = [
     "tox",
@@ -45,7 +45,14 @@ doc = [
 
 [tool.pdm.scripts]
 test = {cmd = "pytest", help = "Run the test suite"}
-cover = { composite = [
+tox = "tox"
+lint = "pre-commit run --all-files"
+doc = "mkdocs build"
+"doc:watch" = "mkdocs serve"
+
+[tool.pdm.scripts.cover]
+help = "Run the test suite with coverage"
+composite = [
   """
   test
     --cov-report=term
@@ -54,11 +61,7 @@ cover = { composite = [
     --cov-report=xml:reports/coverage.xml
     --junitxml=reports/tests.xml
   """
-], help = "Run the test suite with coverage" }
-tox = "tox"
-lint = "pre-commit run --all-files"
-doc = "mkdocs build"
-"doc:watch" = "mkdocs serve"
+]
 
 
 
@@ -83,6 +86,32 @@ exclude = '''
   | tests/fixtures
 )/
 '''
+
+[tool.flakeheaven]
+format = "grouped"
+max_line_length = 110
+exclude = [
+  ".git",
+  ".github",
+  ".mypy_cache",
+  ".pytest_cache",
+  ".tox",
+  ".venv",
+  "__pycache__",
+  "__pypackages__",
+  "build",
+  "dist",
+  "reports",
+  "site",
+  "venv",
+  "docs",
+]
+
+
+[tool.flakeheaven.plugins]
+pycodestyle = ["+*", "-E203"]
+pyflakes = ["+*"]
+mccabe = ["+*"]
 
 
 [tool.isort]
@@ -117,4 +146,10 @@ source = ["json4humans"]
 branch = true
 omit = [
   "tests/*",
+]
+
+
+[tool.mypy]
+exclude = [
+  "docs",
 ]

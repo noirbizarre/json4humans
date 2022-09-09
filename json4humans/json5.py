@@ -1,15 +1,21 @@
 """
-JSON5 implementation for Python
+This module implements the [JSON module protocol][json4humans.types.JSONModule]
+for [JSON5](https://json5.org/).
 
-Specifications are available here : https://spec.json5.org/
+The JSON5 Data Interchange Format ([JSON5](https://json5.org/)) is a superset of [JSON](https://json.org/)
+that aims to alleviate some of the limitations of JSON by expanding its syntax to include some productions
+from [ECMAScript 5.1](https://www.ecma-international.org/ecma-262/5.1/).
+
+See: [specifications](https://specs.json5.org)
+
 """
 from __future__ import annotations
 
 import re
 from typing import Any, TextIO, cast
 
-from lark import Lark, Token, v_args
-from lark.visitors import merge_transformers
+from lark import Lark, Token
+from lark.visitors import merge_transformers, v_args
 
 from . import json, wsc
 from .env import DEBUG
@@ -37,6 +43,10 @@ from .types import (  # noqa: F401
 
 
 class JSON5Transformer(StylePreservingTransformer):
+    """
+    A [Transformer][lark.visitors.Transformer] for JSON5
+    """
+
     @v_args(inline=True)
     def string(self, string: String):
         return string

@@ -1,17 +1,28 @@
-# Welcome to MkDocs
+---
+hide:
+  - navigation
+  - toc
+---
+# JSON 4 Humans
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+<p align="center">
+  <img src="https://raw.githubusercontent.com/noirbizarre/json4humans/main/docs/images/logo-with-text.svg" />
+</p>
 
-## Commands
+Python tools for JSON and derivateds like JSONC and JSON5 (aka. JSON for humans)
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+This package provider parsing and serialization (with style preservation)
+as well as linting, formatting and cli tools for [JSON](https://www.json.org/)-derived syntaxes.
 
-## Project layout
+## Features
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+- [x] Manipulate all supported format with the exact same API. Currently supported:
+    - [x] [JSON][json4humans.json]
+    - [x] [JSONC][json4humans.jsonc]
+    - [x] [JSON5][json4humans.json5]
+- [x] Parsed data supports native types comparison while preserving style
+- [x] Support serialization for both native types and provided `JSONType`
+- [ ] Supports formatting
+- [ ] Supports linting
+- [ ] All features availables as a standalone cli
+- [ ] Support `jq`-like queries

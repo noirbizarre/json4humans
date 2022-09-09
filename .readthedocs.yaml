@@ -1,0 +1,16 @@
+version: 2
+
+mkdocs:
+  configuration: mkdocs.yml
+
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "3.10"
+  commands:
+    # Install PDM
+    - curl -sSL https://raw.githubusercontent.com/pdm-project/pdm/main/install-pdm.py | python -
+    # Install project's documentation dependencies
+    - $HOME/.local/bin/pdm sync -dG doc
+    # Build the documentation
+    - $HOME/.local/bin/pdm doc -d _readthedocs/html/

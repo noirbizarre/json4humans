@@ -1,8 +1,13 @@
+"""
+This modules provides some helpers to handle style preservation.
+"""
+
 from __future__ import annotations
 
 from typing import Any, Callable, cast
 
-from lark import Token, Transformer, v_args
+from lark import Token
+from lark.visitors import Transformer, v_args
 
 from . import wsc
 from .types import WSC, Array, JSONType, Key, Member, Object, TupleWithTrailingComa, Value
@@ -10,7 +15,7 @@ from .types import WSC, Array, JSONType, Key, Member, Object, TupleWithTrailingC
 
 class StylePreservingTransformer(Transformer):
     """
-    A base Transformer with helpers to handle style preservation
+    A base [Transformer][lark.visitors.Transformer] with helpers to handle style preservation
     """
 
     @v_args(inline=True)
@@ -55,7 +60,16 @@ class StylePreservingTransformer(Transformer):
     key = pack_wsc
 
 
-def with_style(fn: Callable[[Any, Any], str]) -> Callable[[Any, Any], str]:
+JSONEncoderMethod = Callable[[Any, Any], str]
+
+
+def with_style(fn: JSONEncoderMethod) -> JSONEncoderMethod:
+    """
+    A decorator providing whitespaces and comments handling for encoders.
+
+    handling before and after the item for type handlers encoders.
+    """
+
     def encode_with_style(self, obj: Any) -> str:
         return "".join(
             (
