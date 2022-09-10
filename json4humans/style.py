@@ -61,13 +61,17 @@ class StylePreservingTransformer(Transformer):
 
 
 JSONEncoderMethod = Callable[[Any, Any], str]
+"""A JSON encoder type method"""
 
 
 def with_style(fn: JSONEncoderMethod) -> JSONEncoderMethod:
     """
     A decorator providing whitespaces and comments handling for encoders.
 
-    handling before and after the item for type handlers encoders.
+    It handles `json_before` and `json_after` serialization
+    if the object to encode has these attributes.
+
+    :param fn: An encoder method for a spcific type.
     """
 
     def encode_with_style(self, obj: Any) -> str:

@@ -10,10 +10,16 @@ from lark import Lark, Token
 from lark.visitors import Transformer, v_args
 
 from .env import DEBUG
-from .types import WSC, BlockStyleComment, HashStyleComment, JSONType, LineStyleComment, WhiteSpace
+from .types import WSC, BlockStyleComment, HashStyleComment, LineStyleComment, WhiteSpace
 
 
 def parse(wsc: str) -> list[WSC]:
+    """
+    Parse a string into a list of [WSC][json4humans.types.WSC].
+
+    :param wsc: A string representing whitespaces and/or comments.
+    :returns: A list of [WSC][json4humans.types.WSC] only.
+    """
     if DEBUG:
         tree = parser.parse(wsc)
         return cast(list[WSC], transformer.transform(tree))
@@ -25,6 +31,9 @@ def parse_list(items: list["WSC" | str] | None = None) -> list[WSC]:
     """
     Parse an optional sequence of whitespaces and comments as [WSC][json4humans.types.WSC] or [str][]
     into a list of [WSC][json4humans.types.WSC] only.
+
+    :param items: An optional list of [WSC][json4humans.types.WSC] or string to be parsed as WSC.
+    :returns: A list of [WSC][json4humans.types.WSC].
     """
     if items is None:
         return []
@@ -68,18 +77,12 @@ class WSCTransformer(Transformer):
 transformer = WSCTransformer()
 
 
-class PackWSC:
-    @v_args(inline=True)
-    def pack_wsc(self, before: list[WSC], value: JSONType, after: list[WSC]) -> JSONType:
-        value.json_before = before
-        value.json_after = after
-        return value
-
-    value = pack_wsc
-    key = pack_wsc
-
-
 def encode_wsc(wsc: WSC):
+    """
+    Encode a [WSC][json4humans.types.WSC] into its string representation.
+
+    :param wsc: The Whitespace or Comment to encode.
+    """
     match wsc:
         case LineStyleComment():
             return f"//{wsc}"

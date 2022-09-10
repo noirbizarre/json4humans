@@ -29,24 +29,33 @@ class JSONModule(Protocol):
     def loads(self, src: str) -> Any:
         """
         Loads data from a string.
+
+        :param src: Some JSON data as string.
         """
         ...
 
     def load(self, file: TextIO | Path) -> Any:
         """
-        Loads data from a file-like object.
+        Loads data from a file-like object or a Path.
+
+        :param file: A file-like object or path to a file containing JSON to parse.
         """
         ...
 
     def dumps(self, obj: Any) -> str:
         """
         Serialize data to a string.
+
+        :param obj: The object to serialize as JSON.
         """
         ...
 
     def dump(self, obj: Any, out: TextIO | Path):
         """
         Serialize data to a file-like object.
+
+        :param obj: The object to serialize as JSON.
+        :param out: A file-like object or path to a file to serialize to JSON into.
         """
         ...
 
@@ -57,7 +66,12 @@ class Encoder(Protocol):
     """
 
     def encode(self, obj: Any) -> str:
-        """Serialize any object into a JSON string"""
+        """
+        Serialize any object into a JSON string.
+
+        :param obj: Any supported object to serialize
+        :returns: the JSON serialized string representation
+        """
         raise NotImplementedError(f"Unknown type: {type(obj)}")
 
 
