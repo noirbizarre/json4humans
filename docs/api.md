@@ -2,6 +2,7 @@
 
 ## Common types
 
+::: json4humans.protocol
 ::: json4humans.types
 ::: json4humans.wsc
 ::: json4humans.style

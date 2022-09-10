@@ -1,5 +1,5 @@
 """
-This module implements the [JSON module protocol][json4humans.types.JSONModule]
+This module implements the [JSON module protocol][json4humans.protocol.JSONModule]
 for [JSON5](https://json5.org/).
 
 The JSON5 Data Interchange Format ([JSON5](https://json5.org/)) is a superset of [JSON](https://json.org/)
@@ -12,13 +12,12 @@ See: [specifications](https://spec.json5.org)
 from __future__ import annotations
 
 import re
-from typing import Any, TextIO, cast
+from typing import Any, cast
 
-from lark import Lark, Token
+from lark import Token
 from lark.visitors import merge_transformers, v_args
 
-from . import json, wsc
-from .env import DEBUG
+from . import json, protocol, wsc
 from .jsonc import JSONCEncoder
 from .style import StylePreservingTransformer, with_style
 from .types import (  # noqa: F401
@@ -149,35 +148,4 @@ class JSON5Encoder(JSONCEncoder):
         return f'"{escape_string(obj)}"'
 
 
-_params = dict(
-    parser="lalr",
-    start="value",
-    maybe_placeholders=False,
-    regex=True,
-)
-
-if not DEBUG:
-    _params["transformer"] = transformer
-
-parser = Lark.open("grammar/json5.lark", rel_to=__file__, **_params)
-
-
-def loads(src: str) -> Any:
-    if DEBUG:
-        tree = parser.parse(src)
-        return transformer.transform(tree)
-    else:
-        return parser.parse(src)
-
-
-def load(file: TextIO) -> str:
-    return loads(file.read())
-
-
-def dumps(obj: Any) -> str:
-    return JSON5Encoder().encode(obj)
-
-
-def dump(obj: Any, out: TextIO):
-    out.write(dumps(obj))
-    out.write("\n")
+protocol.implement("json5", transformer, JSON5Encoder)

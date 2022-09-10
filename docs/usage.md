@@ -15,7 +15,7 @@ $ pdm add json4humans
 
 ## TL;DR
 
-All JSON4Humans modules implements the [JSON Module protocol][json4humans.types.JSONModule]
+All JSON4Humans modules implements the [JSON Module protocol][json4humans.protocol.JSONModule]
 and so behave exactly like the [Python builtin json module][json].
 Just import the desired syntax module and use it as you would with the builtin moodule.
 
@@ -39,9 +39,10 @@ Just import the desired syntax module and use it as you would with the builtin m
 
 ## The JSON Module protocol
 
-All supported formats modules implements the [JSON Module protocol][json4humans.types.JSONModule]
+All supported formats modules implements the [JSON Module protocol][json4humans.protocol.JSONModule]
 which is trying to mimic as much as possible the [Python builtin json module][json].
 
 ```python
 --8<-- "jsonmodule.py"
 ```
+

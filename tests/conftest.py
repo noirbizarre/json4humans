@@ -7,7 +7,7 @@ from typing import Any
 import pytest
 
 from json4humans import json, json5, jsonc
-from json4humans.types import JSONModule
+from json4humans.protocol import JSONModule
 
 
 def module_name(mod: ModuleType) -> str:

@@ -7,47 +7,7 @@ Most of the time you won't have to instanciate them manually.
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Generic, Iterable, OrderedDict, Protocol, TextIO, TypeVar, runtime_checkable
-
-from lark.visitors import Transformer
-
-
-@runtime_checkable
-class JSONModule(Protocol):
-    """
-    Protocol for JSON modules implemnentation.
-
-    Each implementation must be defined as module implementing this protocol.
-    """
-
-    transformer: Transformer
-    """
-    The default tranformer instance
-    """
-
-    def loads(self, src: str) -> Any:
-        """
-        Loads data from a string.
-        """
-        ...
-
-    def load(self, file: TextIO) -> Any:
-        """
-        Loads data from a file-like object.
-        """
-        ...
-
-    def dumps(self, obj: Any) -> str:
-        """
-        Serialize data to a string.
-        """
-        ...
-
-    def dump(self, obj: Any, out: TextIO):
-        """
-        Serialize data to a file-like object.
-        """
-        ...
+from typing import Generic, Iterable, OrderedDict, TypeVar
 
 
 class JSONType:

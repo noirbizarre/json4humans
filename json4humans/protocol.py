@@ -1,0 +1,137 @@
+"""
+This modules provides the JSONModule protocol as well as some related helpers.
+"""
+from __future__ import annotations
+
+import inspect
+from pathlib import Path
+from typing import Any, Literal, Protocol, TextIO, runtime_checkable
+
+from lark import Lark
+from lark.visitors import Transformer
+
+from .env import DEBUG
+
+
+@runtime_checkable
+class JSONModule(Protocol):
+    """
+    Protocol for JSON modules implemnentation.
+
+    Each implementation must be defined as module implementing this protocol.
+    """
+
+    transformer: Transformer
+    """
+    The default tranformer instance
+    """
+
+    def loads(self, src: str) -> Any:
+        """
+        Loads data from a string.
+        """
+        ...
+
+    def load(self, file: TextIO | Path) -> Any:
+        """
+        Loads data from a file-like object.
+        """
+        ...
+
+    def dumps(self, obj: Any) -> str:
+        """
+        Serialize data to a string.
+        """
+        ...
+
+    def dump(self, obj: Any, out: TextIO | Path):
+        """
+        Serialize data to a file-like object.
+        """
+        ...
+
+
+class Encoder(Protocol):
+    """
+    Protocol for JSON encoders
+    """
+
+    def encode(self, obj: Any) -> str:
+        """Serialize any object into a JSON string"""
+        raise NotImplementedError(f"Unknown type: {type(obj)}")
+
+
+LexerType = Literal["auto", "basic", "contextual", "dynamic", "complete_dynamic"]
+"""Lark supported lexer types"""
+
+
+def implement(
+    grammar: str, transformer: Transformer, encoder: type[Encoder], lexer: LexerType = "auto"
+):
+    """
+    A [JSON module][json4humans.protocol.JSONModule] attributes factory.
+
+    Only provide the grammar, the transformer, the encoder class (and a few optional parameters)
+    and this factory will create all the missing helpers and boiler plate to implement
+    [JSONModule][json4humans.protocol.JSONModule] in the caller module.
+
+    :param grammar: the base name of the grammar (will use the Lark grammar of the same name)
+    :param transformer: the instanciated tranformer for this grammar
+    :param encoder: the default encoder class used on serialization
+    :param lexer: optionaly specify a lexer implementation for Lark
+    """
+    _params = dict(
+        lexer=lexer,
+        parser="lalr",
+        start="value",
+        maybe_placeholders=False,
+        regex=True,
+    )
+
+    if not DEBUG:
+        _params["transformer"] = transformer
+
+    parser = Lark.open(f"grammar/{grammar}.lark", rel_to=__file__, **_params)
+
+    def loads(src: str) -> Any:
+        """
+        Parse JSON from a string
+        """
+        if DEBUG:
+            tree = parser.parse(src)
+            return transformer.transform(tree)
+        else:
+            return parser.parse(src)
+
+    def load(file: TextIO | Path) -> str:
+        """
+        Parse JSON from a file-like object
+        """
+        data = file.read_text() if isinstance(file, Path) else file.read()
+        return loads(data)
+
+    def dumps(obj: Any) -> str:
+        """
+        Serialize JSON to a string
+        """
+        return encoder().encode(obj)
+
+    def dump(obj: Any, out: TextIO | Path):
+        """
+        Serialize JSON to a file-like object
+        """
+        out = out.open("w") if isinstance(out, Path) else out
+        out.write(dumps(obj))
+        out.write("\n")
+
+    info = inspect.stack()[1]
+    module = inspect.getmodule(info[0])
+
+    if module is None:
+        raise RuntimeError(f"Unable to process module from FrameInfo: {info}")
+
+    setattr(module, "parser", parser)
+    setattr(module, "loads", loads)
+    setattr(module, "load", load)
+    setattr(module, "dump", dump)
+    setattr(module, "dumps", dumps)

@@ -1,5 +1,5 @@
 """
-This module implements the [JSONModule protocol][json4humans.types.JSONModule]
+This module implements the [JSONModule protocol][json4humans.protocol.JSONModule]
 for [JSON](https://www.json.org/).
 
 While [JSON](https://www.json.org/) is natively supported by Python standard library,
@@ -10,13 +10,12 @@ This one do by returning [style preserving types][json4humans.types] storing whi
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, TextIO
+from typing import Any
 
-from lark import Lark, Token
+from lark import Token
 from lark.visitors import merge_transformers, v_args
 
-from . import wsc
-from .env import DEBUG
+from . import protocol, wsc
 from .style import StylePreservingTransformer, with_style
 from .types import (  # noqa: F401
     WSC,
@@ -63,7 +62,7 @@ class JSONTransformer(StylePreservingTransformer):
 transformer = merge_transformers(JSONTransformer(), wsc=wsc.transformer)
 
 
-class JSONEncoder:
+class JSONEncoder(protocol.Encoder):
     """
     The default JSON Encoder
     """
@@ -150,48 +149,7 @@ class FormatOptions:
     add_end_line_return: bool = True
 
 
-_params = dict(
-    lexer="basic",
-    parser="lalr",
-    start="value",
-    maybe_placeholders=False,
-    regex=True,
-)
-
-if not DEBUG:
-    _params["transformer"] = transformer
-
-parser = Lark.open("grammar/json.lark", rel_to=__file__, **_params)
+# parser, loads, load, dumps, dump = protocol.factory("json", transformer, JSONEncoder, lexer="basic")
 
 
-def loads(src: str) -> Any:
-    """
-    Parse JSON from a string
-    """
-    if DEBUG:
-        tree = parser.parse(src)
-        return transformer.transform(tree)
-    else:
-        return parser.parse(src)
-
-
-def load(file: TextIO) -> str:
-    """
-    Parse JSON from a file-like object
-    """
-    return loads(file.read())
-
-
-def dumps(obj: Any) -> str:
-    """
-    Serialize JSON to a string
-    """
-    return JSONEncoder().encode(obj)
-
-
-def dump(obj: Any, out: TextIO):
-    """
-    Serialize JSON to a file-like object
-    """
-    out.write(dumps(obj))
-    out.write("\n")
+protocol.implement("json", transformer, JSONEncoder, lexer="basic")
