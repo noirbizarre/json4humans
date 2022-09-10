@@ -13,11 +13,17 @@ readme = "README.md"
 license = {text = "MIT"}
 [project.optional-dependencies]
 
+[project.urls]
+Homepage = "https://github.com/noirbizarre/json4humans"
+Documentation = "https://json4humans.rtfd.io"
+Repository = "https://github.com/noirbizarre/json4humans"
+Issues = "https://github.com/noirbizarre/json4humans/issues"
+
 [build-system]
 requires = ["pdm-pep517>=1.0.0"]
 build-backend = "pdm.pep517.api"
 
-[tool]
+
 [tool.pdm]
 [tool.pdm.dev-dependencies]
 test = [
@@ -49,7 +55,6 @@ tox = "tox"
 lint = "pre-commit run --all-files"
 doc = "mkdocs build"
 "doc:watch" = "mkdocs serve"
-
 [tool.pdm.scripts.cover]
 help = "Run the test suite with coverage"
 composite = [
@@ -62,7 +67,6 @@ composite = [
     --junitxml=reports/tests.xml
   """
 ]
-
 
 
 [tool.pdm.vscode]
@@ -87,6 +91,7 @@ exclude = '''
 )/
 '''
 
+
 [tool.flakeheaven]
 format = "grouped"
 max_line_length = 110
@@ -106,8 +111,6 @@ exclude = [
   "venv",
   "docs",
 ]
-
-
 [tool.flakeheaven.plugins]
 pycodestyle = ["+*", "-E203"]
 pyflakes = ["+*"]
@@ -140,6 +143,7 @@ markers = [
   "json5: Mark a function to be tested against the JSON5 implementation",
   "jsonc: Mark a function to be tested against the JSONC implementation",
 ]
+
 
 [tool.coverage.run]
 source = ["json4humans"]
