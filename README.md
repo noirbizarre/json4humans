@@ -5,6 +5,9 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/54c04851ef133974e718/maintainability)](https://codeclimate.com/github/noirbizarre/json4humans/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/54c04851ef133974e718/test_coverage)](https://codeclimate.com/github/noirbizarre/json4humans/test_coverage)
 [![Documentation Status](https://readthedocs.org/projects/json4humans/badge/?version=latest)](https://json4humans.readthedocs.io/en/latest/?badge=latest)
+[![PyPI](https://img.shields.io/pypi/v/json4humans)](https://pypi.org/project/json4humans/)
+[![PyPI - License](https://img.shields.io/pypi/l/json4humans)](https://pypi.org/project/json4humans/)
+
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/noirbizarre/json4humans/main/docs/images/logo-with-text.svg" />
