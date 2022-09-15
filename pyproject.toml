@@ -30,6 +30,7 @@ test = [
     "pytest>=7.1.2",
     "pytest-sugar>=0.9.5",
     "pytest-cov>=3.0.0",
+    "pytest-benchmark[histogram]>=3.4.1",
 ]
 lint = [
     "black>=22.6.0",
@@ -50,14 +51,17 @@ doc = [
 
 
 [tool.pdm.scripts]
-test = {cmd = "pytest", help = "Run the test suite"}
-tox = "tox"
-lint = "pre-commit run --all-files"
-doc = "mkdocs build"
-"doc:watch" = "mkdocs serve"
-[tool.pdm.scripts.cover]
-help = "Run the test suite with coverage"
-composite = [
+test.help = "Run the test suite"
+test.cmd = "pytest"
+
+tox.help = "Run the test suite against all supported Python version"
+tox.cmd = "tox"
+
+lint.help = "Lint all tracked files using pre-commit"
+lint.cmd = "pre-commit run --all-files"
+
+cover.help = "Run the test suite with coverage"
+cover.composite = [
   """
   test
     --cov-report=term
@@ -67,6 +71,29 @@ composite = [
     --junitxml=reports/tests.xml
   """
 ]
+
+pre_bench = "mkdir -p reports/benchmarks"
+bench.help = "Run the benchmarks suite"
+bench.cmd = """
+pytest --verbose
+  -o "python_files=bench*.py"
+  -o "python_functions=bench_*"
+  --benchmark-group-by=fullname
+  --benchmark-autosave
+  --benchmark-disable-gc
+  --benchmark-histogram=reports/benchmarks/histogram
+  --benchmark-json=reports/benchmarks/data.json
+  --benchmark-max-time=5
+  --benchmark-min-time=1
+  --benchmark-save-data
+  --junitxml=reports/benchmarks/junit.xml
+"""
+
+doc.help = "Build the documentation"
+doc.cmd = "mkdocs build"
+
+"doc:watch".help = ""
+"doc:watch".cmd = "mkdocs serve"
 
 
 [tool.pdm.vscode]

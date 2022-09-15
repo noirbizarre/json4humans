@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from types import ModuleType
 from typing import Any
 
 import pytest
@@ -10,7 +9,7 @@ from json4humans import json, json5, jsonc
 from json4humans.protocol import JSONModule
 
 
-def module_name(mod: ModuleType) -> str:
+def module_name(mod: JSONModule) -> str:
     return mod.__name__.split(".")[-1]
 
 
@@ -27,6 +26,13 @@ class JSONTester:
 
     def __init__(self, module: JSONModule):
         self.module = module
+
+    @property
+    def name(self) -> str:
+        return module_name(self.module)
+
+    def __str__(self) -> str:
+        return self.module.__name__
 
     def assert_parse_equal(self, input: Path | str, expected: Any) -> Any:
         __tracebackhide__ = True

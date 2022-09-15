@@ -26,6 +26,9 @@ class JSONModule(Protocol):
     The default tranformer instance
     """
 
+    __name__: str
+    """The module fully qualified name"""
+
     def loads(self, src: str) -> Any:
         """
         Loads data from a string.
