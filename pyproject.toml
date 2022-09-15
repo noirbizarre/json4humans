@@ -1,6 +1,5 @@
 [project]
 name = "json4humans"
-version = "0.1.0"
 description = "Python tools for JSONC and JSON5 (aka. JSON for humans)"
 authors = [
     {name = "Axel H.", email = "noirbizarre@gmail.com"},
@@ -11,6 +10,7 @@ dependencies = [
 requires-python = ">=3.10"
 readme = "README.md"
 license = {text = "MIT"}
+dynamic = ["version"]
 [project.optional-dependencies]
 
 [project.urls]
@@ -24,7 +24,11 @@ requires = ["pdm-pep517>=1.0.0"]
 build-backend = "pdm.pep517.api"
 
 
-[tool.pdm]
+[tool.pdm.version]
+source = "scm"
+write_to = "json4humans/_version.py"
+write_template = '__version__ = "{}"'
+
 [tool.pdm.dev-dependencies]
 test = [
     "pytest>=7.1.2",
