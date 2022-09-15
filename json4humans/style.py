@@ -4,12 +4,14 @@ This modules provides some helpers to handle style preservation.
 
 from __future__ import annotations
 
-from typing import Any, Callable, cast
+from collections.abc import Callable
+from typing import Generic, TypeAlias, TypeVar, cast
 
 from lark import Token
 from lark.visitors import Transformer, v_args
 
 from . import wsc
+from .protocol import JSONEncoder
 from .types import WSC, Array, JSONType, Key, Member, Object, TupleWithTrailingComa, Value
 
 
@@ -60,27 +62,32 @@ class StylePreservingTransformer(Transformer):
     key = pack_wsc
 
 
-JSONEncoderMethod = Callable[[Any, Any], str]
+Encoder = TypeVar("Encoder", bound=JSONEncoder)
+T = TypeVar("T")
+
+
+JSONEncoderMethod: TypeAlias = Callable[[Encoder, T], str]
 """A JSON encoder type method"""
 
+JSONEncoderBoundMethod: TypeAlias = Callable[[T], str]
+"""A JSON encoder bound type method"""
 
-def with_style(fn: JSONEncoderMethod) -> JSONEncoderMethod:
-    """
-    A decorator providing whitespaces and comments handling for encoders.
 
-    It handles `json_before` and `json_after` serialization
-    if the object to encode has these attributes.
+class with_style(Generic[Encoder, T]):
+    encoder: Encoder
 
-    :param fn: An encoder method for a spcific type.
-    """
+    def __init__(self, fn: JSONEncoderMethod):
+        self.fn = fn
 
-    def encode_with_style(self, obj: Any) -> str:
+    def __call__(self, obj: T) -> str:
         return "".join(
             (
                 "".join(wsc.encode_wsc(w) for w in getattr(obj, "json_before", [])),
-                fn(self, obj),
+                self.fn(self.encoder, obj),
                 "".join(wsc.encode_wsc(w) for w in getattr(obj, "json_after", [])),
             )
         )
 
-    return encode_with_style
+    def __get__(self, instance, owner) -> JSONEncoderBoundMethod:
+        self.encoder = instance
+        return self.__call__

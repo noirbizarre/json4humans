@@ -62,10 +62,14 @@ class JSONTransformer(StylePreservingTransformer):
 transformer = merge_transformers(JSONTransformer(), wsc=wsc.transformer)
 
 
-class JSONEncoder(protocol.Encoder):
+class JSONEncoder(protocol.JSONEncoder):
     """
     The default JSON Encoder
     """
+
+    def __init__(self, *, indent: int | str | None = None) -> None:
+        super().__init__()
+        self.indent = indent
 
     def encode(self, obj: Any) -> str:
         match obj:

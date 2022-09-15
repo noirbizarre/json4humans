@@ -13,6 +13,27 @@ from lark.visitors import Transformer
 from .env import DEBUG
 
 
+class JSONEncoder(Protocol):
+    """
+    Protocol for JSON encoders
+    """
+
+    indent: int | str | None
+
+    def __init__(self, *, indent: int | str | None = None) -> None:
+        super().__init__()
+        self.indent = indent
+
+    def encode(self, obj: Any) -> str:
+        """
+        Serialize any object into a JSON string.
+
+        :param obj: Any supported object to serialize
+        :returns: the JSON serialized string representation
+        """
+        raise NotImplementedError(f"Unknown type: {type(obj)}")
+
+
 @runtime_checkable
 class JSONModule(Protocol):
     """
@@ -45,37 +66,40 @@ class JSONModule(Protocol):
         """
         ...
 
-    def dumps(self, obj: Any) -> str:
+    def dumps(
+        self, obj: Any, *, cls: type[JSONEncoder] | None = None, indent: str | int | None = None
+    ) -> str:
         """
-        Serialize data to a string.
+        Serialize `obj` to a string.
+
+        The parameters have the  same meaning as [dump()][json4humans.protocol.JSONModule.dump]
 
         :param obj: The object to serialize as JSON.
+        :param cls: An encoder class to use. Will use the default module encoder if `None`.
+        :param indent: Indentation to use, either an integer defining the number of spaces
+                       or a string representing the indentation characters to be used as indentation.
+        :returns: The serialized object as a JSON string representation.
         """
         ...
 
-    def dump(self, obj: Any, out: TextIO | Path):
+    def dump(
+        self,
+        obj: Any,
+        out: TextIO | Path,
+        *,
+        cls: type[JSONEncoder] | None = None,
+        indent: str | int | None = None,
+    ):
         """
-        Serialize data to a file-like object.
+        Serialize `obj` to a file-like object.
 
         :param obj: The object to serialize as JSON.
+        :param cls: An encoder class to use. Will use the default module encoder if `None`.
+        :param indent: Indentation to use, either an integer defining the number of spaces
+                       or a string representing the indentation characters to be used as indentation.
         :param out: A file-like object or path to a file to serialize to JSON into.
         """
         ...
-
-
-class Encoder(Protocol):
-    """
-    Protocol for JSON encoders
-    """
-
-    def encode(self, obj: Any) -> str:
-        """
-        Serialize any object into a JSON string.
-
-        :param obj: Any supported object to serialize
-        :returns: the JSON serialized string representation
-        """
-        raise NotImplementedError(f"Unknown type: {type(obj)}")
 
 
 LexerType = Literal["auto", "basic", "contextual", "dynamic", "complete_dynamic"]
@@ -83,7 +107,7 @@ LexerType = Literal["auto", "basic", "contextual", "dynamic", "complete_dynamic"
 
 
 def implement(
-    grammar: str, transformer: Transformer, encoder: type[Encoder], lexer: LexerType = "auto"
+    grammar: str, transformer: Transformer, encoder: type[JSONEncoder], lexer: LexerType = "auto"
 ):
     """
     A [JSON module][json4humans.protocol.JSONModule] attributes factory.
@@ -110,36 +134,29 @@ def implement(
 
     parser = Lark.open(f"grammar/{grammar}.lark", rel_to=__file__, **_params)
 
+    def dump(obj: Any, out: TextIO | Path, *, indent: str | int | None = None):
+        out = out.open("w") if isinstance(out, Path) else out
+        out.write(dumps(obj))
+        out.write("\n")
+
+    def dumps(obj: Any, *, indent: str | int | None = None) -> str:
+        return encoder(indent=indent).encode(obj)
+
+    def load(file: TextIO | Path) -> str:
+        data = file.read_text() if isinstance(file, Path) else file.read()
+        return loads(data)
+
     def loads(src: str) -> Any:
-        """
-        Parse JSON from a string
-        """
         if DEBUG:
             tree = parser.parse(src)
             return transformer.transform(tree)
         else:
             return parser.parse(src)
 
-    def load(file: TextIO | Path) -> str:
-        """
-        Parse JSON from a file-like object
-        """
-        data = file.read_text() if isinstance(file, Path) else file.read()
-        return loads(data)
-
-    def dumps(obj: Any) -> str:
-        """
-        Serialize JSON to a string
-        """
-        return encoder().encode(obj)
-
-    def dump(obj: Any, out: TextIO | Path):
-        """
-        Serialize JSON to a file-like object
-        """
-        out = out.open("w") if isinstance(out, Path) else out
-        out.write(dumps(obj))
-        out.write("\n")
+    dump.__doc__ = JSONModule.dump.__doc__
+    dumps.__doc__ = JSONModule.dumps.__doc__
+    load.__doc__ = JSONModule.load.__doc__
+    loads.__doc__ = JSONModule.loads.__doc__
 
     info = inspect.stack()[1]
     module = inspect.getmodule(info[0])
