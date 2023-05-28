@@ -6,8 +6,10 @@ Most of the time you won't have to instanciate them manually.
 
 from __future__ import annotations
 
+from collections import OrderedDict
+from collections.abc import Iterable
 from enum import Enum
-from typing import Generic, Iterable, OrderedDict, TypeVar
+from typing import Generic, TypeVar
 
 
 class JSONType:

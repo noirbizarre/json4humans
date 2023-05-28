@@ -8,12 +8,12 @@ import pytest
 from json4humans import json, json5, jsonc
 from json4humans.protocol import JSONModule
 
+JSON_MODULES = (
+    json,
+    jsonc,
+    json5,
+)
 
-def module_name(mod: JSONModule) -> str:
-    return mod.__name__.split(".")[-1]
-
-
-JSONS: dict[str, JSONModule] = {module_name(mod): mod for mod in (json, jsonc, json5)}
 FIXTURES: Path = Path(__file__).parent / "fixtures"
 
 
@@ -29,10 +29,13 @@ class JSONTester:
 
     @property
     def name(self) -> str:
-        return module_name(self.module)
+        return self.module.__name__.split(".")[-1]
 
     def __str__(self) -> str:
-        return self.module.__name__
+        return self.name
+
+    def __repr__(self) -> str:
+        return f"JSONTester({self.module.__name__})"
 
     def assert_parse_equal(self, input: Path | str, expected: Any) -> Any:
         __tracebackhide__ = True
@@ -44,17 +47,22 @@ class JSONTester:
         return getattr(self.module, name)
 
 
+JSONS: dict[str, JSONTester] = {
+    tester.name: tester for tester in (JSONTester(module) for module in JSON_MODULES)
+}
+
+
 def pytest_generate_tests(metafunc: pytest.Metafunc):
     if "jsont" in metafunc.fixturenames:
         jsont_params: list[pytest.ParameterSet] = []
 
         if marker := metafunc.definition.get_closest_marker("jsons"):
             for name in marker.args:
-                mod = JSONS[name]
+                tester = JSONS[name]
                 marks = [
                     getattr(pytest.mark, name),
                 ]
-                jsont_params.append(pytest.param(JSONTester(mod), id=name, marks=marks))
+                jsont_params.append(pytest.param(tester, id=name, marks=marks))
         metafunc.parametrize("jsont", jsont_params)
 
     if "fixture" in metafunc.fixturenames:

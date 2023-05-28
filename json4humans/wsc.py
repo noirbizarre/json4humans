@@ -27,7 +27,7 @@ def parse(wsc: str) -> list[WSC]:
         return cast(list[WSC], parser.parse(wsc))
 
 
-def parse_list(items: list["WSC" | str] | None = None) -> list[WSC]:
+def parse_list(items: list[WSC | str] | None = None) -> list[WSC]:
     """
     Parse an optional sequence of whitespaces and comments as [WSC][json4humans.types.WSC] or [str][]
     into a list of [WSC][json4humans.types.WSC] only.
@@ -95,13 +95,13 @@ def encode_wsc(wsc: WSC):
     raise NotImplementedError(f"Unknown whitespace or comment type: {wsc!r}")
 
 
-_params = dict(
-    lexer="basic",
-    parser="lalr",
-    start="wschs",
-    maybe_placeholders=False,
-    regex=True,
-)
+_params = {
+    "lexer": "basic",
+    "parser": "lalr",
+    "start": "wschs",
+    "maybe_placeholders": False,
+    "regex": True,
+}
 
 if not DEBUG:
     _params["transformer"] = transformer

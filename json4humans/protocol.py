@@ -50,6 +50,9 @@ class JSONModule(Protocol):
     __name__: str
     """The module fully qualified name"""
 
+    def __str__(self) -> str:
+        return self.__name__
+
     def loads(self, src: str) -> Any:
         """
         Loads data from a string.
@@ -121,13 +124,13 @@ def implement(
     :param encoder: the default encoder class used on serialization
     :param lexer: optionaly specify a lexer implementation for Lark
     """
-    _params = dict(
-        lexer=lexer,
-        parser="lalr",
-        start="value",
-        maybe_placeholders=False,
-        regex=True,
-    )
+    _params = {
+        "lexer": lexer,
+        "parser": "lalr",
+        "start": "value",
+        "maybe_placeholders": False,
+        "regex": True,
+    }
 
     if not DEBUG:
         _params["transformer"] = transformer
