@@ -14,15 +14,14 @@ dynamic = ["version"]
 [project.optional-dependencies]
 
 [project.urls]
-Homepage = "https://github.com/noirbizarre/json4humans"
+Homepage = "https://github.com/noirbizarre/json4humans#readme"
 Documentation = "https://json4humans.rtfd.io"
+Changelog = "https://github.com/noirbizarre/json4humans/blob/main/CHANGELOG.md"
 Repository = "https://github.com/noirbizarre/json4humans"
-Issues = "https://github.com/noirbizarre/json4humans/issues"
 
 [build-system]
-requires = ["pdm-pep517>=1.0.0"]
-build-backend = "pdm.pep517.api"
-
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
 
 [tool.pdm.version]
 source = "scm"
@@ -37,11 +36,10 @@ test = [
     "pytest-benchmark[histogram]>=3.4.1",
 ]
 lint = [
-    "black>=22.6.0",
-    "isort>=5.10.1",
-    "mypy>=0.971",
+    "black==23.3.0",
+    "mypy==1.3.0",
     "absolufy-imports>=0.3.1",
-    "flakeheaven>=3.0.0",
+    "ruff==0.0.270",
 ]
 tox = [
     "tox",
@@ -52,7 +50,9 @@ doc = [
     "mkdocs-material>=8.3.9",
     "mkdocstrings[python]>=0.19.0",
 ]
-
+release = [
+    "emotional",
+]
 
 [tool.pdm.scripts]
 test.help = "Run the test suite"
@@ -93,16 +93,26 @@ pytest --verbose
   --junitxml=reports/benchmarks/junit.xml
 """
 
+compare.help = "Run the benchmarks comparison tool"
+compare.cmd = "pytest-benchmark compare"
+
 doc.help = "Build the documentation"
 doc.cmd = "mkdocs build"
 
 "doc:watch".help = ""
 "doc:watch".cmd = "mkdocs serve"
 
+changelog.help = "Generate/update the changelog"
+changelog.cmd = "cz changelog --incremental"
+
+bump.help = "Bump the version using commitizen"
+bump.cmd = "cz bump --changelog"
+
 
 [tool.pdm.vscode]
-linters = ["flake8"]
+linters = ["ruff","mypy"]
 formatter = "black"
+tests = "pytest"
 
 
 [tool.black]
@@ -121,43 +131,6 @@ exclude = '''
   | tests/fixtures
 )/
 '''
-
-
-[tool.flakeheaven]
-format = "grouped"
-max_line_length = 110
-exclude = [
-  ".git",
-  ".github",
-  ".mypy_cache",
-  ".pytest_cache",
-  ".tox",
-  ".venv",
-  "__pycache__",
-  "__pypackages__",
-  "build",
-  "dist",
-  "reports",
-  "site",
-  "venv",
-  "docs",
-]
-[tool.flakeheaven.plugins]
-pycodestyle = ["+*", "-E203"]
-pyflakes = ["+*"]
-mccabe = ["+*"]
-
-
-[tool.isort]
-# See: https://pycqa.github.io/isort/docs/configuration/black_compatibility/
-profile = "black"
-multi_line_output = 3
-include_trailing_comma = true
-line_length = 110
-atomic = true
-filter_files = true
-known_first_party = ["json4humans"]
-known_third_party = ["lark"]
 
 
 [tool.pytest.ini_options]
@@ -183,8 +156,46 @@ omit = [
   "tests/*",
 ]
 
+[tool.coverage.report]
+exclude_lines = [
+  'def __repr__',
+  'if TYPE_CHECKING:',
+]
+ignore_errors = true
+
 
 [tool.mypy]
 exclude = [
   "docs",
 ]
+
+
+[tool.ruff]
+line-length = 110
+fix = true
+respect-gitignore = true
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # McCabe # fake8-comprehension
+    "C",
+    # Pyupgrade
+    "UP",
+    # isort
+    "I001"
+]
+src = [".", "tests"]
+
+[tool.ruff.isort]
+known-first-party = ["json4humans"]
+known-third-party = ["lark", "pytest"]
+
+
+[tool.commitizen]
+name = "emotional"
+github = "noirbizarre/json4humans"
+version_provider = "scm"
+
