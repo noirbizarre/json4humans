@@ -99,8 +99,8 @@ compare.cmd = "pytest-benchmark compare"
 doc.help = "Build the documentation"
 doc.cmd = "mkdocs build"
 
-"doc:watch".help = ""
-"doc:watch".cmd = "mkdocs serve"
+"doc:serve".help = "Serve the documentation with live reload"
+"doc:serve".cmd = "mkdocs serve"
 
 changelog.help = "Generate/update the changelog"
 changelog.cmd = "cz changelog --incremental"
