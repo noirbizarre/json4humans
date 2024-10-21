@@ -3,6 +3,7 @@ These tests are mostly trying to parse samples from
 the specifications: https://spec.json5.org/
 as well as JSON and JSONC sample for backward compatibility
 """
+
 from __future__ import annotations
 
 from pathlib import Path
