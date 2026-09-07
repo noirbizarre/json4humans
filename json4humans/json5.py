@@ -9,6 +9,7 @@ from [ECMAScript 5.1](https://www.ecma-international.org/ecma-262/5.1/).
 See: [specifications](https://spec.json5.org)
 
 """
+
 from __future__ import annotations
 
 import re

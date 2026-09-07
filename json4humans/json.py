@@ -7,6 +7,7 @@ the builtin module doesn't provide style preservation.
 
 This one do by returning [style preserving types][json4humans.types] storing whitespaces.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
