@@ -18,11 +18,9 @@ from json4humans.types import WSC, BlockStyleComment, HashStyleComment, LineStyl
         (["  // line comment"], [WhiteSpace("  "), LineStyleComment(" line comment")]),
         (["/* block comment */"], [BlockStyleComment(" block comment ")]),
         (
-            [
-                """/*
+            ["""/*
       multiline block comment
-      */"""
-            ],
+      */"""],
             [BlockStyleComment("\n      multiline block comment\n      ")],
         ),
         (["# Hash comment // /**/ #"], [HashStyleComment(" Hash comment // /**/ #")]),
