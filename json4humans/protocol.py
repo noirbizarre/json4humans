@@ -1,6 +1,7 @@
 """
 This modules provides the JSONModule protocol as well as some related helpers.
 """
+
 from __future__ import annotations
 
 import inspect
