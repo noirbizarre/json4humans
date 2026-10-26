@@ -6,6 +6,7 @@ This is a format introduced by
 This is basically standard JSON with both line and block comments
 supports as well as optionnal trailing coma support.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
