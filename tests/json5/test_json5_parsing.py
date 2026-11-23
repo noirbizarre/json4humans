@@ -3,6 +3,7 @@ These tests are mostly trying to parse samples from
 the specifications: https://spec.json5.org/
 as well as JSON and JSONC sample for backward compatibility
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -31,10 +32,8 @@ def test_parse_json5_short_exemple(jsont: JSONTester, fixtures: Path):
                 ),
                 (
                     json5.Ident("lineBreaks"),
-                    json5.String(
-                        "Look, Mom! \
-No \\n's!"
-                    ),
+                    json5.String("Look, Mom! \
+No \\n's!"),
                 ),
                 (json5.Ident("hexadecimal"), json5.HexInteger(0xDECAF)),
                 (json5.Ident("leadingDecimalPoint"), json5.Float(0.8675309)),
