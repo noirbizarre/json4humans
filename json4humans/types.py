@@ -131,6 +131,7 @@ class Array(list["Value"], Container):
 
 class Identifier(str, JSONType):
     "A quoteless string without special characters"
+
     pass
 
 
